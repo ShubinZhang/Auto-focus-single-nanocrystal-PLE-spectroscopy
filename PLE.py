@@ -1,3 +1,14 @@
+'''
+Python scirpt to measure single nanocrystal PLE spectroscopy
+
+Original code by
+Copyright (C) 2017  Shubin Zhang
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation
+'''
+
 import os
 import sys
 import time
