@@ -8,7 +8,7 @@ Photoluminescence excitation (PLE) spectroscopy is a powerful tool to study semi
 
 * Instruments are properly connected physically.
 * Connection ports in "config.py" are setted correctly.
-* Python 2.7. 
+* Python 2.7. Other required packages can be found in "requirements.txt".
 
 ## **Liscence**
 
