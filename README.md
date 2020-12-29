@@ -2,7 +2,7 @@
 
 ## **About the project**
 
-Photoluminescence excitation (PLE) spectroscopy is a powerful tool to study semiconductor fine structure. For semiconductor nanocrystals (NCs), single NC PLE spectroscopy is more valuable since it excludes unwanted sizing effect in ensemle. However, small NC size (less than 10 nm) and blinking effect make single nanocystal PLE spectroscopy very challenging. This project designs a python script to automatically measure the PLE of sinlge nanocrystal. Preliminary result can be found in https://pubs.acs.org/doi/10.1021/acs.jpclett.0c01407.
+Photoluminescence excitation (PLE) spectroscopy is a powerful tool to study semiconductor fine structure. For semiconductor nanocrystals (NCs), single NC PLE spectroscopy is more valuable since it excludes unwanted sizing effect in ensemle. However, small NC size (less than 10 nm) and blinking effect make single nanocystal PLE spectroscopy very challenging. This project designs a python script to automatically measure the PLE of sinlge nanocrystal. Besides basic PLE spectrum measurement, this script also includes single nanocrystal auto relocation in x, y, z direction to prevent any drift during the measurement. Preliminary result can be found in https://pubs.acs.org/doi/10.1021/acs.jpclett.0c01407.
 
 ## **Prerequisites**
 
