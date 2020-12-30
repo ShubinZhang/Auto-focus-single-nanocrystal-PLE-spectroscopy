@@ -31,5 +31,7 @@ setting_dict = {
     "wlen_step":2,     #wavelength step size (nm)
     "PLE_power": 17,   #fianium laser power for PLE (%)
     "PLE_exp_t": 1,    #camera exposure time for PLE (s)
-    "PLE_scan_num": 16  #total number of ple spectra for averaging
+    "PLE_scan_num": 16,  #total number of ple spectra for averaging
+
+    "response":"response_data.dat"  #reponse curve file name
     } 

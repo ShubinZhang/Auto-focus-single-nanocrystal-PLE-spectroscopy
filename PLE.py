@@ -1,14 +1,3 @@
-'''
-Python scirpt to measure single nanocrystal PLE spectroscopy
-
-Original code by
-Copyright (C) 2017  Shubin Zhang
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation
-'''
-
 import os
 import sys
 import time
@@ -28,21 +17,11 @@ from scipy import optimize
 import pyqtgraph as pg
 from config import setting_dict
 
-class piezo():
-    def __init__(self):
-        self.mclp = mcl_piezo_lib.madpiezo()
-    def goxy(self,x,y):
-        self.mclp.goxy(x,y)
-        sleep(0.2)  
-        print "current position:",self.mclp.get_position()
-    def goz(self,z):
-        self.mclp.goz(z)
-        sleep(0.2)
-        print "current position:",self.mclp.get_position()
+
 
 
 class Auto_focus_PLE():
-    def __init__(self,emission_area,background_area):
+    def __init__(self,emission_area,background_area,response_file):
         self.app = QtGui.QApplication(sys.argv)
         self.camera = andor_camera.AndorCamera()
         self.mclp = mcl_piezo_lib.madpiezo()
@@ -55,7 +34,7 @@ class Auto_focus_PLE():
         self.camera.CoolerON()
         self.camera.SetTemperature(-85)
         self.fianium.enable()
-        self.abs_power_wlen, self.abs_power_r = np.loadtxt("response_data.dat", unpack =True)
+        self.abs_power_wlen, self.abs_power_r = np.loadtxt(response_file, unpack =True)
         
         self.counts_image_bot = emission_area[0]
         self.counts_image_top = emission_area[1]
@@ -218,7 +197,7 @@ class Auto_focus_PLE():
     def get_pl_and_power(self,exp_time,wlen=False):
         self.camera.GetAcquisitionTimings()
         real_exptime = self.camera._exposure
-        if ((self.desired_int_time>=(real_exptime*1000/2.)) and self.desired_int_time>max_exp_sia):
+        if ((self.desired_int_time>=(real_exptime*1000/2.)) and self.desired_int_time>self.max_exp_sia):
             self.sia.set_int_time(real_exptime*1000/2.)
         powerlevel1 = self.sia.ref_amp(12.)
         self.camera.StartAcquisition()
@@ -250,7 +229,7 @@ class Auto_focus_PLE():
     def ple(self,ple_laser_power,exp_time):
         min_exp = exp_time
         min_exp_sia = 0.5 
-        max_exp_sia = 500.
+        self.max_exp_sia = 500.
         wlenrange = np.arange(self.wlen_start, self.wlen_end, self.wlen_step)  
         wlenrange = wlenrange[::-1] #excitation wavelength scan from red to blue scan       
         plesignals_all = np.zeros(len(wlenrange)) 
@@ -308,8 +287,8 @@ class Auto_focus_PLE():
                 adjust_int_time = self.desired_int_time
                 if adjust_int_time<=min_exp_sia:
                     adjust_int_time = min_exp_sia
-                elif adjust_int_time>max_exp_sia:
-                    adjust_int_time = max_exp_sia
+                elif adjust_int_time>self.max_exp_sia:
+                    adjust_int_time = self.max_exp_sia
                 self.sia.set_int_time(adjust_int_time) 
                 #Estimate the exposure time for the camera
                 if i==0:
@@ -321,7 +300,7 @@ class Auto_focus_PLE():
                 else:
                     exptime = last_exptime
 
-                powerlevel, pllevel, real_exptime, dark_level, sia_int_time = self.get_pl_and_power(self.min_exp, wlen)
+                powerlevel, pllevel, real_exptime, dark_level, sia_int_time = self.get_pl_and_power(min_exp, wlen)
                 #At this point acquired frame can be overexposed, underexposed or fine 
                 #so, figure out what is it and take another frame if needed
                 pllevels[i] = pllevel
@@ -481,7 +460,7 @@ class Auto_focus_PLE():
         print "first_estimation_exp_time = ", first_estimation_exp_time
         return first_estimation_exp_time
 
-    def ple_and_scan(self,setting_dict):
+    def ple_and_scan(self, **setting_dict):
         stime = time.time()
         #set parameters for rescan
         self.image = setting_dict["subimage"]    #sub image for scan and ple.  bot, top,left, right
@@ -542,6 +521,6 @@ class Auto_focus_PLE():
 
 
 if __name__ == "__main__":
-    measurement = Auto_focus_PLE(setting_dict["emission"],setting_dict["background"]) 
-    measurement.ple_and_scan(setting_dict)
+    measurement = Auto_focus_PLE(setting_dict["emission"],setting_dict["background"],setting_dict["response"]) 
+    measurement.ple_and_scan(**setting_dict)
 
